@@ -1,0 +1,3 @@
+reverse
+max, min 
+memory compaction
