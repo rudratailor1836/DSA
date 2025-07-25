@@ -12,7 +12,7 @@ class Trie:
     def insert(self, word):
         curr = self.root
         for c in word:
-            if c in curr.children:
+            if c not in curr.children:
                 curr.children[c] = Node()
             curr = curr.children[c]
         curr.end_of_word = True
@@ -44,10 +44,38 @@ class Trie:
 
 
     def starts_with(self, prefix):
-        pass
+        # dfs algo
+        words = []
+        curr = self.root
+
+        for c in prefix:
+            if c not in curr.children:
+                return words
+            curr = curr.children[c]
+        
+        def _dfs(curr, path):
+            if curr.end_of_word:
+                words.append(''.join(path))
+            
+            for c,child_node in curr.children.items():
+                _dfs(child_node, path + [c])
+            
+        _dfs(curr, list(prefix))
+        return words
 
     def lists_word(self):
-        pass
+        words = []
+
+        def _dfs(curr, path):
+            if curr.end_of_word:
+                words.append(''.join(path))
+            
+            for c,child_node in curr.children.items():
+                _dfs(child_node, path + [c])
+        
+        _dfs(self.root, [])
+
+        return words
     
     def _delete(self, curr, word, index):
         if index == len(word):
@@ -66,6 +94,33 @@ class Trie:
         if delete_curr_node:
             del curr.children[c]
             return len(curr.children) == 0 and not curr.end_of_word
-        return
+        return False
+    
+
+
+
+
+if __name__ == '__main__':
+    T = Trie()
+    T.insert('hello')
+    T.insert("henry")
+    T.insert('rude')
+    T.insert('jay')
+    T.insert('minimum')
+    T.insert('minimal')
+    T.insert('minimalistic')
+
+    print(T.lists_word())
+
+    print(T.has_prefix('mi'))
+    print(T.starts_with("he"))
+
+    T.delete('jay')
+    print(T.lists_word())
+
+    print(T.search('rude'))
+
+
+    
          
 
